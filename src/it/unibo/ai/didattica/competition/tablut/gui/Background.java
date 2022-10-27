@@ -17,8 +17,7 @@ public abstract class Background extends JPanel {
 	protected Image background;
 	protected Image black;
 	protected Image white;
-	protected Image king;
-	asas
+	protected Image king;	
 	protected State aState;
 	
 	public Background()

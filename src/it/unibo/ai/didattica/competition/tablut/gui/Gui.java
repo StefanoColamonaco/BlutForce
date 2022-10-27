@@ -38,7 +38,7 @@ public class Gui {
 	 */
 	private void initGUI() {
 		switch (this.game) {
-		case 1
+		case 1:
 			background = new BackgroundTablut();
 			break;
 		case 2:

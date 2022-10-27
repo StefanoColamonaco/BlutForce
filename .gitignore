@@ -1,3 +1,5 @@
 .idea
 Executables/garbage
 Executables/logs
+garbage/
+logs/
