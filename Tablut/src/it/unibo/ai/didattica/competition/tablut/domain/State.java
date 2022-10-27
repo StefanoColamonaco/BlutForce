@@ -59,6 +59,22 @@ public abstract class State {
 			return pawn;
 		}
 
+		public static Pawn fromString(String s) {
+			switch(s) {
+				case "O":
+					return EMPTY;
+				case "W":
+					return WHITE;
+				case "B":
+					return BLACK;
+				case "T":
+					return THRONE;
+				case "K":
+					return KING;
+				default:
+					return null;
+			}
+		}
 	}
 
 	protected Pawn board[][];
