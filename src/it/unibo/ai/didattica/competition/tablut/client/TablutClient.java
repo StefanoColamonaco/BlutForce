@@ -37,6 +37,10 @@ public abstract class TablutClient implements Runnable {
 		return player;
 	}
 
+	public int getTimeout() {
+		return timeout;
+	}
+
 	public void setPlayer(State.Turn player) {
 		this.player = player;
 	}
