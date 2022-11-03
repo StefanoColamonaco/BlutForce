@@ -25,6 +25,10 @@ import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.domain.StateTablut;
 import it.unibo.ai.didattica.competition.tablut.exceptions.*;
 
+import it.unibo.ai.didattica.competition.tablut.BlutForce.search.heuristics.BlackHeuristics;
+import it.unibo.ai.didattica.competition.tablut.BlutForce.search.heuristics.Heuristics;
+import it.unibo.ai.didattica.competition.tablut.BlutForce.search.heuristics.WhiteHeuristics;
+
 
 public class BlutForceGame implements Game, Cloneable, aima.core.search.adversarial.Game<State, Action, State.Turn>{
     private int repeated_moves_allowed;
@@ -36,6 +40,7 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
     private List<String> citadels;
     private List<State> drawConditions;
     private Moves moves;
+    private Logger log;
     
     public BlutForceGame(int repeated_moves_allowed, int cache_size, String logs_folder, String whiteName, String blackName) {
         this(new StateTablut(), repeated_moves_allowed, cache_size, logs_folder, whiteName, blackName);
@@ -72,6 +77,7 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 		this.citadels.add("e8");
 
         this.moves = new Moves(this.citadels);
+        this.log = Logger.getLogger("BlutForceGame");
     }
 
 
@@ -362,10 +368,20 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 		return state;
     }
 
+    @Override
+	public State getResult(State state, Action action) {
+		state = this.movePawn(state.clone(), action);
+		if (state.getTurn().equalsTurn("W")) {
+			state = moves.checkCaptureBlack(state, action);
+		} else if (state.getTurn().equalsTurn("B")) {
+			state = moves.checkCaptureWhite(state, action);
+		}
+		return state;
+	}
 
     @Override
 	public void endGame(State state) {
-        // this.loggGame.fine("Stato:\n"+state.toString());
+        this.log.fine("Stato:\n"+state.toString());
 	}
 
 	@Override
@@ -388,32 +404,32 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 	}
 
 
-	@Override
-	public State getResult(State state, Action action) {
-
-		// state = this.movePawn(state.clone(), action);
-
-		// if (state.getTurn().equalsTurn("W")) {
-		// 	state = this.checkCaptureBlack(state, action);
-		// } else if (state.getTurn().equalsTurn("B")) {
-		// 	state = this.checkCaptureWhite(state, action);
-		// }
-		// return state;
-        return null;
-    }
-
 
 	@Override
-	public double getUtility(State state, Turn action) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getUtility(State state, Turn turn) {
+		// if it is a terminal state
+		if ((turn.equals(State.Turn.BLACK) && state.getTurn().equals(State.Turn.BLACKWIN))
+				|| (turn.equals(State.Turn.WHITE) && state.getTurn().equals(State.Turn.WHITEWIN)))
+			return Double.POSITIVE_INFINITY;
+		else if ((turn.equals(State.Turn.BLACK) && state.getTurn().equals(State.Turn.WHITEWIN))
+				|| (turn.equals(State.Turn.WHITE) && state.getTurn().equals(State.Turn.BLACKWIN)))
+			return Double.NEGATIVE_INFINITY;
+
+		// if it isn't a terminal state
+		Heuristics heuristics = null;
+		if (turn.equals(State.Turn.WHITE)) {
+			heuristics = new WhiteHeuristics();
+		} else {
+			heuristics = new BlackHeuristics();
+		}
+		return  heuristics.evaluateState(state);	
 	}
 
 
 	@Override
 	public boolean isTerminal(State state) {
-		// TODO Auto-generated method stub
-		return false;
+		Turn turn=state.getTurn();
+		return turn.equals(Turn.BLACKWIN)||turn.equals(Turn.WHITEWIN)||turn.equals(Turn.DRAW);
 	}
 
 }
