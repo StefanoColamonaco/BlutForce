@@ -38,17 +38,18 @@ public class Player extends IterativeDeepeningAlphaBetaSearch<StateTablut,Action
         //State.Turn turn=state.getTurn();
 		//System.out.println(turn.toString()+" - "+(turn.equals(Turn.BLACKWIN)||turn.equals(Turn.WHITEWIN)||turn.equals(Turn.DRAW))+" - "+game.getUtility(state, player));;
         return game.getUtility(state, player);
-    } 
+    }
     // @Override
  	public Action makeDecision(StateTablut state, BlutForceGame rules) {
         List<Action> actions = rules.getActions(state);
- 		//Action a= super.makeDecision(state);
+ 		Action a = super.makeDecision(state);
  		//if (debug)
  	    //    System.out.println("Explored a total of " + getMetrics().get(METRICS_NODES_EXPANDED) + " nodes, reaching a depth limit of " + getMetrics().get(METRICS_MAX_DEPTH));
  		//return a;
-        for (Action a : actions) {
-            System.out.println("Action: " + a.toString());
-        }
-        return actions.get(0);
+        // for (Action a : actions) {
+        //     System.out.println("Action: " + a.toString());
+        // }
+        
+        return a;
  	}
 }
