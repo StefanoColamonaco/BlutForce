@@ -7,14 +7,14 @@ import java.util.List;
 
 public abstract class Heuristics {
 
-    public final static double startingBlackPawns = 16.0;
-    public final static double startingWhitePawns = 8.0;
-    public final static int best_positions_threshold = 3;
+    protected final static double startingBlackPawns = 16.0;
+    protected final static double startingWhitePawns = 8.0;
+    protected final static int best_positions_threshold = 3;
 
-    private final List<String> good_escape_cells = Arrays.asList("a3", "a7", "c1", "c9", "g1", "g9", "i3", "i7");
-    private final List<String> transition_cells = Arrays.asList("c5", "g5", "e3", "e7");
-    private List<String> nearCastle = Arrays.asList("e4", "e6", "f5", "d5");
-    private List<String> best_positions = Arrays.asList("e3", "e4", "e6", "e7", "c5", "d5", "f5", "g5");
+    protected final List<String> good_escape_cells = Arrays.asList("a3", "a7", "c1", "c9", "g1", "g9", "i3", "i7");
+    protected final List<String> transition_cells = Arrays.asList("c5", "g5", "e3", "e7");
+    protected List<String> nearCastle = Arrays.asList("e4", "e6", "f5", "d5");
+    protected List<String> best_positions = Arrays.asList("e3", "e4", "e6", "e7", "c5", "d5", "f5", "g5");
 
     // Evaluate the given state
     abstract public double evaluateState(State s);
@@ -50,30 +50,8 @@ public abstract class Heuristics {
         return val;
     }
 
-    public static Boolean equalsPawn(State state, Pawn pawn, int row, int column) {
-        return state.getPawn(row, column).equalsPawn(Pawn.WHITE.toString());
-    }
-
-    public Boolean isKingProtected(State state) {
-        int[] kingCoord = this.getKing(state);
-        int row;
-        int column;
-        row = kingCoord[0];
-        column = kingCoord[1];
-        int surround = 0;
-        if(equalsPawn(state, Pawn.WHITE, row - 1, column))
-            surround++;
-        if(equalsPawn(state, Pawn.WHITE, row + 1, column))
-            surround++;
-        if(equalsPawn(state, Pawn.WHITE, row, column - 1))
-            surround++;
-        if(equalsPawn(state, Pawn.WHITE, row, column + 1))
-            surround++;
-        return surround>=3;
-    }
-
-    public Boolean isKingInCastle(State state) {
-        return  state.getPawn(4,4).equalsPawn(Pawn.KING.toString());
+    public static Boolean isPawnInCoords(State state, int row, int column,  Pawn pawn) {
+        return state.getPawn(row, column).equalsPawn(pawn.toString());
     }
 
     public static int[] getCoordsFromBox(String box){
@@ -84,23 +62,28 @@ public abstract class Heuristics {
         coords[1] = c - 1;
         return coords;
     }
-    public Boolean isBestPosition(State state){
-        int goodPosition = 0;
-        for (String box : this.best_positions) {
-            int[] coords = getCoordsFromBox(box);
-            if(equalsPawn(state, Pawn.WHITE, coords[0], coords[1]))
-                goodPosition++;
-        }
-        return goodPosition >= best_positions_threshold;
+
+    // Given a state, a row, a column and a pawn, it returns the number of pawns of the same color that are around the coordinates (row, column)
+    public int numberOfColorPawnAroundCoords(State state, int row, int column, Pawn pawn){
+        int count = 0;
+        if (isPawnInCoords(state, row - 1, column, pawn))
+            count++;
+        if (isPawnInCoords(state, row + 1, column, pawn))
+            count++;
+        if (isPawnInCoords(state, row, column - 1, pawn))
+            count++;
+        if (isPawnInCoords(state, row, column + 1, pawn))
+            count++;
+        return count;
     }
 
-    public Boolean isKingNearCastle(State state) {
-        for (String box : this.nearCastle) {
-            int[] coords = getCoordsFromBox(box);
-            if(equalsPawn(state, Pawn.KING, coords[0], coords[1]))
-                return true;
-        }
-        return false;
+    public Boolean isKingInCastle(State state) {
+        return  state.getPawn(4,4).equalsPawn(Pawn.KING.toString());
+    }
+
+    public Boolean isKingNearCastle(State state){
+        int[] kingCoord = getKing(state);
+        return this.nearCastle.contains(state.getBox(kingCoord[0], kingCoord[1]));
     }
 
     public Boolean isPathFree() {

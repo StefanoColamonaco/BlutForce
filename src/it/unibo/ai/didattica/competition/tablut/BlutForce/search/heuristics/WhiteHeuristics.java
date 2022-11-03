@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
+import it.unibo.ai.didattica.competition.tablut.domain.State.Pawn;
 
 public class WhiteHeuristics extends Heuristics{
     
@@ -22,13 +23,15 @@ public class WhiteHeuristics extends Heuristics{
         super();
         this.weights=new HashMap<String,Double>();
         this.weights.put(this.KING_PROTECTED, 100.0);     // king have >= 3 white pawns in the four adjacent cells
-		this.weights.put(this.BEST_POSITIONS, 60.0);      // treshold (between 4 and 7 included..?) <= number of white pawns positioned in: "e (3,4,6,7)", "(c,d,f,g) 5"
         this.weights.put(this.KING_IN_CASTLE, 35.0);      // king positioned in castle
+        this.weights.put(this.BEST_POSITIONS, 60.0);      // treshold (between 4 and 7 included..?) <= number of white pawns positioned in: "e (3,4,6,7)", "(c,d,f,g) 5"
         this.weights.put(this.KING_NEAR_CASTLE, 25.0);    // king positioned in one of the four cells around the castle
-        this.weights.put(this.ESCAPE_FREE, 20.0);         // no pawns between king and one of: "a3","a7" "c1","c9","g1","g9","i3","i7"
-        this.weights.put(this.ESCAPE_PATH_FREE, 10.0);    // no pawns between king and transition cells (one of): "c5","g5","e3","e7"
         this.weights.put(this.WHITE_LOSED, -7.0);         // for each losed white pawn
         this.weights.put(this.BLACK_EATEN, 5.0);          // for each eaten black pawn
+		
+        // TODO: Implement this 2 missing heuristics
+        this.weights.put(this.ESCAPE_FREE, 20.0);         // no pawns between king and one of: "a3","a7" "c1","c9","g1","g9","i3","i7"
+        this.weights.put(this.ESCAPE_PATH_FREE, 10.0);    // no pawns between king and transition cells (one of): "c5","g5","e3","e7"
     }
     /* Considerations:
      *  king near castle or in castle + king protected -> bonus                                 + 10
@@ -43,15 +46,43 @@ public class WhiteHeuristics extends Heuristics{
     @Override
     public double evaluateState(State state) {
         
-        double king_protected = conversion(isKingProtected(state)) * weights.get(KING_PROTECTED);
-        double best_positions = conversion(isBestPosition(state)) * weights.get(BEST_POSITIONS);
-        double king_in_castle = conversion(isKingInCastle(state)) * weights.get(KING_IN_CASTLE);
-        double king_near_castle = conversion(isKingNearCastle(state)) * weights.get(KING_NEAR_CASTLE);
+        double king_protected = conversion(this.isKingProtected(state)) * weights.get(KING_PROTECTED);
+        double best_positions = conversion(this.isBestPosition(state)) * weights.get(BEST_POSITIONS);
+        double king_in_castle = conversion(this.isKingInCastle(state)) * weights.get(KING_IN_CASTLE);
+        double king_near_castle = conversion(this.isKingNearCastle(state)) * weights.get(KING_NEAR_CASTLE);
         double escape_free = 0.0 * weights.get(ESCAPE_FREE);
         double escape_path_free = 0.0 * weights.get(ESCAPE_PATH_FREE);
         double num_white = (startingWhitePawns - state.getNumberOf(State.Pawn.WHITE)) * weights.get(WHITE_LOSED);
         double num_black = (startingBlackPawns - state.getNumberOf(State.Pawn.BLACK)) * weights.get(BLACK_EATEN);;
         
         return king_protected + best_positions + king_in_castle + king_near_castle + escape_free + escape_path_free + num_white + num_black;
+    }
+
+    public Boolean isKingProtected(State state) {
+        int[] kingCoord = this.getKing(state);
+        int row;
+        int column;
+        row = kingCoord[0];
+        column = kingCoord[1];
+        return this.numberOfColorPawnAroundCoords(state, row, column, Pawn.WHITE) >= 3;
+    }
+    
+    public Boolean isBestPosition(State state){
+        int goodPosition = 0;
+        for (String box : this.best_positions) {
+            int[] coords = getCoordsFromBox(box);
+            if(isPawnInCoords(state, coords[0], coords[1], Pawn.WHITE))
+                goodPosition++;
+        }
+        return goodPosition >= best_positions_threshold;
+    }
+
+    public Boolean isKingNearCastle(State state) {
+        for (String box : this.nearCastle) {
+            int[] coords = getCoordsFromBox(box);
+            if(isPawnInCoords(state, coords[0], coords[1], Pawn.KING))
+                return true;
+        }
+        return false;
     }
 }
