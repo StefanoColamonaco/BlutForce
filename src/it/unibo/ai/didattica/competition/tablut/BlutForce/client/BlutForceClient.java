@@ -5,6 +5,8 @@ import java.net.UnknownHostException;
 
 import it.unibo.ai.didattica.competition.tablut.client.TablutClient;
 import it.unibo.ai.didattica.competition.tablut.domain.*;
+import it.unibo.ai.didattica.competition.tablut.domain.StateTablut;
+import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Turn;
 import it.unibo.ai.didattica.competition.tablut.BlutForce.search.Player;
 import it.unibo.ai.didattica.competition.tablut.BlutForce.search.BlutForceGame;
@@ -74,7 +76,7 @@ public class BlutForceClient extends TablutClient {
 			e.printStackTrace();
 		}
 
-        StateTablut state;
+        State state;
 		BlutForceGame rules = null;
         
         if(this.game == 4){
@@ -99,7 +101,7 @@ public class BlutForceClient extends TablutClient {
 	        }
 	
 	        // print current state
-	        state = (StateTablut) this.getCurrentState();
+	        state = (State) this.getCurrentState();
 	        System.out.println("Current state:");
 	        System.out.println(state.toString());
 	
@@ -156,7 +158,6 @@ public class BlutForceClient extends TablutClient {
 	            System.out.println("DRAW!");
 	            System.exit(0);
 	        }
-	     
 		}
 	}
 }
