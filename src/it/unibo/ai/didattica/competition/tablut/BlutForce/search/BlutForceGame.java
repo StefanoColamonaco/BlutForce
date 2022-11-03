@@ -403,8 +403,6 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 		return retval;
 	}
 
-
-
 	@Override
 	public double getUtility(State state, Turn turn) {
 		// if it is a terminal state
