@@ -59,20 +59,20 @@ public abstract class Heuristics {
         char r = box.charAt(0);
         char c = box.charAt(1);
         coords[0] = r - 97;
-        coords[1] = c - 1;
+        coords[1] = c - '0';
         return coords;
     }
 
     // Given a state, a row, a column and a pawn, it returns the number of pawns of the same color that are around the coordinates (row, column)
     public int numberOfColorPawnAroundCoords(State state, int row, int column, Pawn pawn){
         int count = 0;
-        if (isPawnInCoords(state, row - 1, column, pawn))
+        if (row > 0 && isPawnInCoords(state, row - 1, column, pawn))
             count++;
-        if (isPawnInCoords(state, row + 1, column, pawn))
+        if (row < 9 && isPawnInCoords(state, row + 1, column, pawn))
             count++;
-        if (isPawnInCoords(state, row, column - 1, pawn))
+        if (column > 0 && isPawnInCoords(state, row, column - 1, pawn))
             count++;
-        if (isPawnInCoords(state, row, column + 1, pawn))
+        if (column < 9 && isPawnInCoords(state, row, column + 1, pawn))
             count++;
         return count;
     }

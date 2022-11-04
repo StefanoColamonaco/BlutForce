@@ -76,13 +76,4 @@ public class WhiteHeuristics extends Heuristics{
         }
         return goodPosition >= best_positions_threshold;
     }
-
-    public Boolean isKingNearCastle(State state) {
-        for (String box : this.nearCastle) {
-            int[] coords = getCoordsFromBox(box);
-            if(isPawnInCoords(state, coords[0], coords[1], Pawn.KING))
-                return true;
-        }
-        return false;
-    }
 }
