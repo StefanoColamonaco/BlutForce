@@ -5,6 +5,8 @@ import java.util.Map;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Pawn;
+import it.unibo.ai.didattica.competition.tablut.domain.Action;
+import it.unibo.ai.didattica.competition.tablut.BlutForce.search.BlutForceGame;
 
 public class WhiteHeuristics extends Heuristics{
     
@@ -19,8 +21,8 @@ public class WhiteHeuristics extends Heuristics{
 
 	private final Map<String,Double> weights;
 
-    public WhiteHeuristics(){
-        super();
+    public WhiteHeuristics(BlutForceGame game){
+        super(game);
         this.weights=new HashMap<String,Double>();
         this.weights.put(this.KING_PROTECTED, 100.0);     // king have >= 3 white pawns in the four adjacent cells
         this.weights.put(this.KING_IN_CASTLE, 35.0);      // king positioned in castle
@@ -28,8 +30,6 @@ public class WhiteHeuristics extends Heuristics{
         this.weights.put(this.KING_NEAR_CASTLE, 25.0);    // king positioned in one of the four cells around the castle
         this.weights.put(this.WHITE_LOSED, -7.0);         // for each losed white pawn
         this.weights.put(this.BLACK_EATEN, 5.0);          // for each eaten black pawn
-		
-        // TODO: Implement this 2 missing heuristics
         this.weights.put(this.ESCAPE_FREE, 20.0);         // no pawns between king and one of: "a3","a7" "c1","c9","g1","g9","i3","i7"
         this.weights.put(this.ESCAPE_PATH_FREE, 10.0);    // no pawns between king and transition cells (one of): "c5","g5","e3","e7"
     }
@@ -53,7 +53,7 @@ public class WhiteHeuristics extends Heuristics{
         double escape_free = 0.0 * weights.get(ESCAPE_FREE);
         double escape_path_free = 0.0 * weights.get(ESCAPE_PATH_FREE);
         double num_white = (startingWhitePawns - state.getNumberOf(State.Pawn.WHITE)) * weights.get(WHITE_LOSED);
-        double num_black = (startingBlackPawns - state.getNumberOf(State.Pawn.BLACK)) * weights.get(BLACK_EATEN);;
+        double num_black = (startingBlackPawns - state.getNumberOf(State.Pawn.BLACK)) * weights.get(BLACK_EATEN);
         
         return king_protected + best_positions + king_in_castle + king_near_castle + escape_free + escape_path_free + num_white + num_black;
     }
@@ -77,3 +77,4 @@ public class WhiteHeuristics extends Heuristics{
         return goodPosition >= best_positions_threshold;
     }
 }
+

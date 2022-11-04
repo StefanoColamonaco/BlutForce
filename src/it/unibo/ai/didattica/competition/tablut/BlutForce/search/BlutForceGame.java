@@ -99,7 +99,7 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
         return playerPawns;
     }
 
-    private void checkPossibleMove(State state, Action a)
+    public void checkPossibleMove(State state, Action a)
             throws BoardException, ActionException, StopException, PawnException, DiagonalException, ClimbingException,
             ThroneException, OccupitedException, ClimbingCitadelException, CitadelException {
         // this.loggGame.fine(a.toString());
@@ -416,9 +416,9 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 		// if it isn't a terminal state
 		Heuristics heuristics = null;
 		if (turn.equals(State.Turn.WHITE)) {
-			heuristics = new WhiteHeuristics();
+			heuristics = new WhiteHeuristics(this);
 		} else {
-			heuristics = new BlackHeuristics();
+			heuristics = new BlackHeuristics(this);
 		}
 		return  heuristics.evaluateState(state);	
 	}

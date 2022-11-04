@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.unibo.ai.didattica.competition.tablut.BlutForce.search.BlutForceGame;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Pawn;
 
@@ -20,8 +21,8 @@ public class BlackHeuristics extends Heuristics {
 
 	private final Map<String,Double> weights;
 
-    public BlackHeuristics(){
-        super();
+    public BlackHeuristics(BlutForceGame game){
+        super(game);
         this.weights=new HashMap<String,Double>();
         this.weights.put(this.KING_ALMOST_CAPTURED, 80.0); // only one more black pawn to capture the king
         this.weights.put(this.KING_UNDER_ATTACK, 60.0);    // king have almost one black pawn around
@@ -29,10 +30,7 @@ public class BlackHeuristics extends Heuristics {
         this.weights.put(this.BLACK_LOSED, -5.0);          // for each losed black pawn
         this.weights.put(this.KING_IN_CASTLE, 35.0);       // king positioned in castle
         this.weights.put(this.KING_NEAR_CASTLE, 25.0);     // king positioned in one of the four cells around the castle
-
-        // TODO: Implement the missing heuristics
-        this.weights.put(this.ESCAPE_FREE, 20.0);          // no pawns between king and one of every escape cells
-        
+        this.weights.put(this.ESCAPE_FREE, 20.0);          // no pawns between king and one of every escape cells       
     }
     
     public Boolean isKingAlmostCaptured(State state){

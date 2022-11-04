@@ -1,7 +1,9 @@
 package it.unibo.ai.didattica.competition.tablut.BlutForce.search.heuristics;
 
+import it.unibo.ai.didattica.competition.tablut.BlutForce.search.BlutForceGame;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Pawn;
+import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +20,12 @@ public abstract class Heuristics {
 
     // Evaluate the given state
     abstract public double evaluateState(State s);
+    protected BlutForceGame game;
+
+
+    public Heuristics(BlutForceGame game) {
+        this.game = game;
+    }
     
 
     public int capturedOf(State state, Pawn color) {
@@ -58,8 +66,8 @@ public abstract class Heuristics {
         int[] coords = new int[2];
         char r = box.charAt(0);
         char c = box.charAt(1);
-        coords[0] = r - 97;
-        coords[1] = c - '0';
+        coords[0] = r - 97; // a = 97
+        coords[1] = c - 48; // 0 = 48
         return coords;
     }
 
@@ -86,7 +94,29 @@ public abstract class Heuristics {
         return this.nearCastle.contains(state.getBox(kingCoord[0], kingCoord[1]));
     }
 
-    public Boolean isPathFree() {
-        return true;
+    // Given a state and a List of possible boxes, return true iff the king can reach one of the boxes
+    public Boolean isReachable(State state, List<String> positions) {
+        int[] coords = this.getKing(state);
+        String from = state.getBox(coords[0], coords[1]); 
+        for (String to : positions) {
+            // int[] coords = getCoordsFromBox(box);
+            try {
+                Action a = new Action(from, to, state.getTurn());
+                this.game.checkPossibleMove(state, a);
+                return true;
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        return false;           
     }
+    
+    public Boolean isEscapeFree(State state) {
+        return isReachable(state, this.good_escape_cells);
+    }
+
+    public Boolean isEscapePathFree(State state) {
+        return isReachable(state, this.transition_cells);
+    }
+    
 }
