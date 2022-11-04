@@ -118,5 +118,27 @@ public abstract class Heuristics {
     public Boolean isEscapePathFree(State state) {
         return isReachable(state, this.transition_cells);
     }
+
+    public Boolean isKingUnderAttack(State state){
+        int[] kingCoords = this.getKing(state);
+        int kingRow = kingCoords[0];
+        int kingColumn = kingCoords[1];
+        return numberOfColorPawnAroundCoords(state, kingRow, kingColumn, Pawn.BLACK) >= 1;
+    }
+
+    public Boolean isKingAlmostCaptured(State state){
+        int[] kingCoords = this.getKing(state);
+        int kingRow = kingCoords[0];
+        int kingColumn = kingCoords[1];
+        if (this.isKingInCastle(state)){
+            return numberOfColorPawnAroundCoords(state, kingRow, kingColumn, Pawn.BLACK) == 3;
+        }
+        else if (this.isKingNearCastle(state)){
+            return numberOfColorPawnAroundCoords(state, kingRow, kingColumn, Pawn.BLACK) == 2;
+        }
+        else {
+            return false;
+        }
+    }
     
 }

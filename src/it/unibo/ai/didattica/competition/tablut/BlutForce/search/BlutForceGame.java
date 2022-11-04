@@ -420,7 +420,8 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 		} else {
 			heuristics = new BlackHeuristics(this);
 		}
-		return  heuristics.evaluateState(state);	
+        double eval = heuristics.evaluateState(state);
+		return  eval;
 	}
 
 
