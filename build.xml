@@ -1,0 +1,54 @@
+<project name="Tablut">
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build"/>
+        <javac encoding="iso-8859-1" srcdir="src" destdir="build">
+            <classpath>
+                <pathelement path="lib/gson-2.2.2.jar" />
+                <pathelement path="lib/commons-cli-1.4.jar" />
+                <pathelement path="lib/aima-core.jar" />
+            </classpath>
+        </javac>
+        <copy todir="build">
+            <fileset dir="src" excludes="*.java"/>
+        </copy>
+    </target>
+    
+    <target name="server">
+        <java classname="it.unibo.ai.didattica.competition.tablut.server.Server" fork="true">
+            <classpath>
+                <pathelement location="lib/gson-2.2.2.jar"/>
+                <pathelement location="lib/commons-cli-1.4.jar"/>
+                <pathelement location="build"/>
+            </classpath>
+        	 <arg value="-g"/>
+       	 	 <arg value="--time 60"/>
+        </java>
+    </target>
+
+    <target name="BlutForceBlack">
+        <java classname="it.unibo.ai.didattica.competition.tablut.BlutForce.client.BlutForceBlackClient" fork="true">
+            <classpath>
+                <pathelement location="lib/gson-2.2.2.jar"/>
+                <pathelement path="lib/aima-core.jar" />
+                <pathelement location="build"/>
+            </classpath>
+            <arg line="${args}"></arg>
+        </java>
+    </target>
+
+	<target name="BlutForceWhite">
+        <java classname="it.unibo.ai.didattica.competition.tablut.BlutForce.client.BlutForceWhiteClient" fork="true" >
+            <classpath>
+                <pathelement location="lib/gson-2.2.2.jar"/>
+                <pathelement path="lib/aima-core.jar" />
+                <pathelement location="build"/>
+            </classpath>
+            <arg line="${args}"></arg>
+        </java>
+    </target>
+</project>
