@@ -43,7 +43,7 @@ public class BlutForceClient extends TablutClient {
 		String role = "";
 		String name = "BlutForce";
 		String ipAddress = "localhost";
-		int timeout = 60;
+		int timeout = 60;				//TODO: timeout to 60
 		boolean debug = false;
 		System.out.println("Len of params array "+args.length);
 		if (args.length < 1) {
