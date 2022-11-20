@@ -1,5 +1,5 @@
 # !/bin/bash
-
+cd "$(dirname "$0")"
 if [[ "${1^^}" == "WHITE" ]]
 then
     ant BlutForceWhite -Dargs="${1^^} ${2} ${3}"
