@@ -5,7 +5,6 @@ import java.util.Map;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Pawn;
-import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import it.unibo.ai.didattica.competition.tablut.BlutForce.search.BlutForceGame;
 
 public class WhiteHeuristics extends Heuristics{
@@ -19,6 +18,7 @@ public class WhiteHeuristics extends Heuristics{
     private final String BLACK_EATEN = "blackEaten";
     private final String WHITE_LOSED = "whiteLosed";
     private final String KING_ALMOST_CAPTURED = "kingAlmostCaptured";
+    private final String PAWNS_UNDER_ATTACK = "pawnsUnderAttack";
 
     private final int blackEatenTreshold = 5;
 
@@ -32,10 +32,11 @@ public class WhiteHeuristics extends Heuristics{
         this.weights.put(this.BEST_POSITIONS, 60.0);      // treshold (between 4 and 7 included..?) <= number of white pawns positioned in: "e (3,4,6,7)", "(c,d,f,g) 5"
         this.weights.put(this.KING_NEAR_CASTLE, 25.0);    // king positioned in one of the four cells around the castle
         this.weights.put(this.WHITE_LOSED, -90.0);         // for each losed white pawn
-        this.weights.put(this.BLACK_EATEN, 65.0);          // for each eaten black pawn
-        this.weights.put(this.ESCAPE_FREE, 70.0);         // no pawns between king and one of: "a3","a7" "c1","c9","g1","g9","i3","i7"
+        this.weights.put(this.BLACK_EATEN, 70.0);          // for each eaten black pawn
+        this.weights.put(this.ESCAPE_FREE, 80.0);         // no pawns between king and one of: "a3","a7" "c1","c9","g1","g9","i3","i7"
         this.weights.put(this.ESCAPE_PATH_FREE, 75.0);    // no pawns between king and transition cells (one of): "c5","g5","e3","e7"
         this.weights.put(this.KING_ALMOST_CAPTURED, -80.0);
+        this.weights.put(this.PAWNS_UNDER_ATTACK, -10.0);
     }
     /* Considerations:
      *  king near castle or in castle + king protected -> bonus
@@ -54,6 +55,7 @@ public class WhiteHeuristics extends Heuristics{
         double num_white = (startingWhitePawns - state.getNumberOf(State.Pawn.WHITE)) * weights.get(WHITE_LOSED);
         double num_black = (startingBlackPawns - state.getNumberOf(State.Pawn.BLACK)) * weights.get(BLACK_EATEN);
         double king_almost_captured = conversion(this.isKingAlmostCaptured(state)) * weights.get(KING_ALMOST_CAPTURED);
+        double pawns_under_attack = this.numPawnsUnderAttack(state) * weights.get(KING_ALMOST_CAPTURED);
 
         double bonus = 0;
         if( king_near_castle > 0 && king_protected > 0){
@@ -68,7 +70,7 @@ public class WhiteHeuristics extends Heuristics{
             this.weights.put(this.BLACK_EATEN, 45.0);
         }
 
-        return king_protected + best_positions + king_in_castle + king_near_castle + escape_free + escape_path_free + num_white + num_black + king_almost_captured + bonus;
+        return king_protected + best_positions + king_in_castle + king_near_castle + escape_free + escape_path_free + num_white + num_black + king_almost_captured + pawns_under_attack +bonus;
     }
 
     public Boolean isKingProtected(State state) {
@@ -88,6 +90,38 @@ public class WhiteHeuristics extends Heuristics{
                 goodPosition++;
         }
         return goodPosition >= best_positions_threshold;
+    }
+
+    public Boolean isKingInCoords(State state, int row, int column){
+        int[] kingCoord = this.getKing(state);
+        return kingCoord[0] == row && kingCoord[1] == column;
+    }
+
+    public Boolean isFreeCell(State state, int row, int column){
+        if (row<0 || row>8 || column<0 || column>8)
+            return false;
+        return !isPawnInCoords(state, row, column, Pawn.BLACK) && !isPawnInCoords(state, row, column, Pawn.WHITE);
+    }
+
+    public Integer numPawnsUnderAttack(State state){ // base version
+        int num = 0;
+        for (int row = 0; row < 9; row++) {
+            System.out.println("row: "+row);
+            for (int column = 0; column < 9; column++) {
+                System.out.println("row: "+row+" column: "+column);
+                if(isPawnInCoords(state, row, column, Pawn.WHITE) && !isKingInCoords(state, row, column)){
+                    if(row<9 && isPawnInCoords(state, row+1, column, Pawn.BLACK) && isFreeCell(state, row-1, column))
+                        num++;
+                    if(row>0 && isPawnInCoords(state, row-1, column, Pawn.BLACK) && isFreeCell(state, row+1, column))
+                        num++;
+                    if(column<9 && isPawnInCoords(state, row, column+1, Pawn.BLACK) && isFreeCell(state, row, column-1))
+                        num++;
+                    if(column>0 && isPawnInCoords(state, row, column-1, Pawn.BLACK) && isFreeCell(state, row, column+1))
+                        num++;
+                }
+            }
+        }        
+        return num;
     }
 }
 

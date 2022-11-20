@@ -212,7 +212,7 @@ public class Server implements Runnable {
 			}else{
 				enableGui=false;
 			}
-			enableGui=true;				//TODO: remove
+			// enableGui=true;				//TODO: remove
 
 			if(cmd.hasOption("R")){
 				replayFilePath = cmd.getOptionValue("R");
