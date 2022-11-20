@@ -104,6 +104,7 @@ public class WhiteHeuristics extends Heuristics{
     }
 
     public Integer numPawnsUnderAttack(State state){ // base version
+        // TODO: fix indexes
         int num = 0;
         for (int row = 0; row < 9; row++) {
             System.out.println("row: "+row);
