@@ -54,7 +54,6 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
         this.whiteName = whiteName;
         this.blackName = blackName;
         this.rules = new GameAshtonTablut(repeated_moves_allowed, cache_size, logs_folder, whiteName, blackName);
-        
         // TODO: Check if using "this" is correct
         this.drawConditions = new ArrayList<State>();
         

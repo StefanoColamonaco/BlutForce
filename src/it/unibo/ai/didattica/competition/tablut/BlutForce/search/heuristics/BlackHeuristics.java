@@ -31,8 +31,8 @@ public class BlackHeuristics extends Heuristics {
         this.weights.put(this.BLACK_LOSED, -5.0);          // for each losed black pawn
         //this.weights.put(this.KING_IN_CASTLE, 35.0);       // king positioned in castle
         //this.weights.put(this.KING_NEAR_CASTLE, 25.0);     // king positioned in one of the four cells around the castle
-        this.weights.put(this.ESCAPE_FREE, -60.0);          // no pawns between king and one of every escape cells  
-        this.weights.put(this.ESCAPE_PATH_FREE, -20.0);     
+        this.weights.put(this.ESCAPE_FREE, -90.0);          // no pawns between king and one of every escape cells  
+        this.weights.put(this.ESCAPE_PATH_FREE, -40.0);     
     }
 
     @Override

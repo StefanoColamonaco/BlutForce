@@ -17,7 +17,8 @@ public abstract class Heuristics {
     protected final List<String> transition_cells = Arrays.asList("c5", "g5", "e3", "e7");
     protected List<String> nearCastle = Arrays.asList("e4", "e6", "f5", "d5");
     protected List<String> best_positions = Arrays.asList("e3", "e4", "e6", "e7", "c5", "d5", "f5", "g5");
-
+    protected List<String> black_camps = Arrays.asList("a4","a5","a6","b5","d1","e1","f1","e2","d9","e9","f9","e8","i4","i5","i6","h5");
+    
     // Evaluate the given state
     abstract public double evaluateState(State s);
     protected BlutForceGame game;

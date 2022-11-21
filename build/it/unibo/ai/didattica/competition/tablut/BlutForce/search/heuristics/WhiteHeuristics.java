@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
+import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Pawn;
 import it.unibo.ai.didattica.competition.tablut.BlutForce.search.BlutForceGame;
 
@@ -27,16 +28,16 @@ public class WhiteHeuristics extends Heuristics{
     public WhiteHeuristics(BlutForceGame game){
         super(game);
         this.weights=new HashMap<String,Double>();
-        this.weights.put(this.KING_PROTECTED, 100.0);     // king have >= 3 white pawns in the four adjacent cells
-        this.weights.put(this.KING_IN_CASTLE, 65.0);      // king positioned in castle
-        this.weights.put(this.BEST_POSITIONS, 60.0);      // treshold (between 4 and 7 included..?) <= number of white pawns positioned in: "e (3,4,6,7)", "(c,d,f,g) 5"
+        this.weights.put(this.KING_PROTECTED, 130.0);     // king have >= 3 white pawns in the four adjacent cells
+        this.weights.put(this.KING_IN_CASTLE, 75.0);      // king positioned in castle
+        this.weights.put(this.BEST_POSITIONS, 70.0);      // treshold (between 4 and 7 included..?) <= number of white pawns positioned in: "e (3,4,6,7)", "(c,d,f,g) 5"
         this.weights.put(this.KING_NEAR_CASTLE, 25.0);    // king positioned in one of the four cells around the castle
         this.weights.put(this.WHITE_LOSED, -90.0);         // for each losed white pawn
-        this.weights.put(this.BLACK_EATEN, 70.0);          // for each eaten black pawn
+        this.weights.put(this.BLACK_EATEN, 100.0);          // for each eaten black pawn
         this.weights.put(this.ESCAPE_FREE, 80.0);         // no pawns between king and one of: "a3","a7" "c1","c9","g1","g9","i3","i7"
         this.weights.put(this.ESCAPE_PATH_FREE, 75.0);    // no pawns between king and transition cells (one of): "c5","g5","e3","e7"
         this.weights.put(this.KING_ALMOST_CAPTURED, -80.0);
-        this.weights.put(this.PAWNS_UNDER_ATTACK, -10.0);
+        this.weights.put(this.PAWNS_UNDER_ATTACK, -20.0);
     }
     /* Considerations:
      *  king near castle or in castle + king protected -> bonus
@@ -103,22 +104,63 @@ public class WhiteHeuristics extends Heuristics{
         return !isPawnInCoords(state, row, column, Pawn.BLACK) && !isPawnInCoords(state, row, column, Pawn.WHITE);
     }
 
+    public Boolean isBlackCamp(State state, int row, int column){
+        for (String box : this.black_camps) {
+            if (box.equals(state.getBox(row, column)))
+                return true;
+        }
+        return false;
+    }
+
+    public Boolean blackCanAttack(State state, int row, int column){
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (isPawnInCoords(state, r, c, Pawn.BLACK)){
+                    String from = state.getBox(r, c); 
+                    String to = state.getBox(row, column);
+                    try {
+                        Action a = new Action(from, to, state.getTurn());
+                        this.game.checkPossibleMove(state, a);
+                        return true;
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
+            }
+        }
+        return false;    
+    }
+
     public Integer numPawnsUnderAttack(State state){ // base version
         int num = 0;
+        Boolean isUnderAttack = false;
         for (int row = 0; row < 9; row++) {
-            System.out.println("row: "+row);
             for (int column = 0; column < 9; column++) {
-                System.out.println("row: "+row+" column: "+column);
+                isUnderAttack = false;
                 if(isPawnInCoords(state, row, column, Pawn.WHITE) && !isKingInCoords(state, row, column)){
-                    if(row<9 && isPawnInCoords(state, row+1, column, Pawn.BLACK) && isFreeCell(state, row-1, column))
-                        num++;
-                    if(row>0 && isPawnInCoords(state, row-1, column, Pawn.BLACK) && isFreeCell(state, row+1, column))
-                        num++;
-                    if(column<9 && isPawnInCoords(state, row, column+1, Pawn.BLACK) && isFreeCell(state, row, column-1))
-                        num++;
-                    if(column>0 && isPawnInCoords(state, row, column-1, Pawn.BLACK) && isFreeCell(state, row, column+1))
-                        num++;
+                    if(row<8 
+                    && (isPawnInCoords(state, row+1, column, Pawn.BLACK) || isPawnInCoords(state, row+1, column, Pawn.THRONE) || (isPawnInCoords(state,row+1,column,Pawn.KING) && isKingInCastle(state)) || isBlackCamp(state, row+1, column))
+                    && isFreeCell(state, row-1, column)
+                    && blackCanAttack(state, row-1, column))
+                        isUnderAttack = true;
+                    if(row>0 
+                    && (isPawnInCoords(state, row-1, column, Pawn.BLACK) || isPawnInCoords(state, row-1, column, Pawn.THRONE) || (isPawnInCoords(state,row-1,column,Pawn.KING) && isKingInCastle(state)) || isBlackCamp(state, row-1, column))
+                    && isFreeCell(state, row+1, column)
+                    && blackCanAttack(state, row+1, column))
+                        isUnderAttack = true;
+                    if(column<8
+                    && (isPawnInCoords(state, row, column+1, Pawn.BLACK) || isPawnInCoords(state, row, column+1, Pawn.THRONE) || (isPawnInCoords(state,row,column+1,Pawn.KING) && isKingInCastle(state)) || isBlackCamp(state, row, column+1)) 
+                    && isFreeCell(state, row, column-1)
+                    && blackCanAttack(state, row, column-1))
+                        isUnderAttack = true;
+                    if(column>0
+                    && (isPawnInCoords(state, row, column-1, Pawn.BLACK) || isPawnInCoords(state, row, column-1, Pawn.THRONE) || (isPawnInCoords(state,row,column-1,Pawn.KING) && isKingInCastle(state)) || isBlackCamp(state, row, column-1))
+                    && isFreeCell(state, row, column+1)
+                    && blackCanAttack(state, row, column+1))
+                        isUnderAttack = true;
                 }
+                if (isUnderAttack)
+                    num++;
             }
         }        
         return num;

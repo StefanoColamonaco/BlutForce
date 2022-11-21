@@ -48,7 +48,8 @@ public class Player extends IterativeDeepeningAlphaBetaSearch<State,Action,Turn>
         // for (Action a : actions) {
         //     System.out.println("Action: " + a.toString());
         // }
-        
+        System.out.println("Metric (node expanded): " + getMetrics().get(METRICS_NODES_EXPANDED));
+        System.out.println("Metric (max depth): " + getMetrics().get(METRICS_MAX_DEPTH));
         return a;
  	}
 }
