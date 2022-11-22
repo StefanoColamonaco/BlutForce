@@ -138,7 +138,7 @@ public abstract class Heuristics {
             return numberOfColorPawnAroundCoords(state, kingRow, kingColumn, Pawn.BLACK) == 2;
         }
         else {
-            return false;
+            return numberOfColorPawnAroundCoords(state, kingRow, kingColumn, Pawn.BLACK) == 1;
         }
     }
     

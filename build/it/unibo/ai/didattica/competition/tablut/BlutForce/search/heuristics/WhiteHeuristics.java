@@ -113,10 +113,9 @@ public class WhiteHeuristics extends Heuristics{
     }
 
     public Boolean blackCanAttack(State state, int row, int column){
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                if (isPawnInCoords(state, r, c, Pawn.BLACK)){
-                    String from = state.getBox(r, c); 
+        for (int c = 0; c < 9; c++) {
+                if (isPawnInCoords(state, row, c, Pawn.BLACK)){
+                    String from = state.getBox(row, c); 
                     String to = state.getBox(row, column);
                     try {
                         Action a = new Action(from, to, state.getTurn());
@@ -125,6 +124,18 @@ public class WhiteHeuristics extends Heuristics{
                     } catch (Exception e) {
                         continue;
                     }
+                }
+        }
+        for (int r = 0; r < 9; r++) {
+            if (isPawnInCoords(state, r, column, Pawn.BLACK)){
+                String from = state.getBox(r, column); 
+                String to = state.getBox(row, column);
+                try {
+                    Action a = new Action(from, to, state.getTurn());
+                    this.game.checkPossibleMove(state, a);
+                    return true;
+                } catch (Exception e) {
+                    continue;
                 }
             }
         }

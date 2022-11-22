@@ -40,7 +40,6 @@ public class Player extends IterativeDeepeningAlphaBetaSearch<State,Action,Turn>
     }
     // @Override
  	public Action makeDecision(State state, BlutForceGame rules) {
-        List<Action> actions = rules.getActions(state);
  		Action a = super.makeDecision(state);
  		//if (debug)
  	    //    System.out.println("Explored a total of " + getMetrics().get(METRICS_NODES_EXPANDED) + " nodes, reaching a depth limit of " + getMetrics().get(METRICS_MAX_DEPTH));
