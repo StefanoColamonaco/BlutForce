@@ -95,8 +95,6 @@ public class Moves {
             if (state.getPawn(a.getRowTo(), a.getColumnTo()).equalsPawn("K")) {
                 state.setTurn(State.Turn.WHITEWIN);            }
         }
-        // TODO: implement the winning condition of the capture of the last black checker
-        // Possible way: get the number of black checkers and check if it is 0 (?)
         this.movesWithoutCapturing++;
         return state;
     }

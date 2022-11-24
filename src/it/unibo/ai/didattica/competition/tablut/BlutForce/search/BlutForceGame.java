@@ -54,7 +54,6 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
         this.whiteName = whiteName;
         this.blackName = blackName;
         this.rules = new GameAshtonTablut(repeated_moves_allowed, cache_size, logs_folder, whiteName, blackName);
-        // TODO: Check if using "this" is correct
         this.drawConditions = new ArrayList<State>();
         
         this.citadels = new ArrayList<String>();
@@ -297,7 +296,6 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 		return actions;
     }
 
-    // TODO-DONE: questa va ancora fittata
     @Override
     public State checkMove(State state, Action a)
             throws BoardException, ActionException, StopException, PawnException, DiagonalException, ClimbingException,
@@ -385,7 +383,6 @@ public class BlutForceGame implements Game, Cloneable, aima.core.search.adversar
 
 	@Override
 	public State getInitialState() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

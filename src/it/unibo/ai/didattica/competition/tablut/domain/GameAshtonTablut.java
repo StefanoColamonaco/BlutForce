@@ -390,9 +390,6 @@ public class GameAshtonTablut implements Game {
 				this.loggGame.fine("Bianco vince con re in " + a.getTo());
 			}
 		}
-		// TODO: implement the winning condition of the capture of the last
-		// black checker
-
 		this.movesWithutCapturing++;
 		return state;
 	}

@@ -48,7 +48,6 @@ public class TablutRandomClient extends TablutClient {
 		String name = "random";
 		String ipAddress = "localhost";
 		int timeout = 60;
-		// TODO: change the behavior?
 		if (args.length < 1) {
 			System.out.println("You must specify which player you are (WHITE or BLACK)");
 			System.exit(-1);
@@ -114,7 +113,6 @@ public class TablutRandomClient extends TablutClient {
 			try {
 				this.read();
 			} catch (ClassNotFoundException | IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				System.exit(1);
 			}
@@ -154,7 +152,6 @@ public class TablutRandomClient extends TablutClient {
 					try {
 						a = new Action("z0", "z0", State.Turn.WHITE);
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					while (!found) {
@@ -172,7 +169,6 @@ public class TablutRandomClient extends TablutClient {
 						try {
 							a = new Action(from, to, State.Turn.WHITE);
 						} catch (IOException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 
@@ -189,7 +185,6 @@ public class TablutRandomClient extends TablutClient {
 					try {
 						this.write(a);
 					} catch (ClassNotFoundException | IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					pawns.clear();
@@ -244,7 +239,6 @@ public class TablutRandomClient extends TablutClient {
 					try {
 						a = new Action("z0", "z0", State.Turn.BLACK);
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					;
@@ -258,7 +252,6 @@ public class TablutRandomClient extends TablutClient {
 						try {
 							a = new Action(from, to, State.Turn.BLACK);
 						} catch (IOException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 
@@ -276,7 +269,6 @@ public class TablutRandomClient extends TablutClient {
 					try {
 						this.write(a);
 					} catch (ClassNotFoundException | IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					pawns.clear();
