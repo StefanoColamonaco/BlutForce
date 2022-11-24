@@ -7,7 +7,6 @@ import it.unibo.ai.didattica.competition.tablut.client.TablutClient;
 import it.unibo.ai.didattica.competition.tablut.domain.*;
 import it.unibo.ai.didattica.competition.tablut.domain.StateTablut;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
-import it.unibo.ai.didattica.competition.tablut.domain.State.Turn;
 import it.unibo.ai.didattica.competition.tablut.BlutForce.search.Player;
 import it.unibo.ai.didattica.competition.tablut.BlutForce.search.BlutForceGame;
 

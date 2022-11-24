@@ -1,7 +1,5 @@
 package it.unibo.ai.didattica.competition.tablut.domain;
 
-import it.unibo.ai.didattica.competition.tablut.domain.Action;
-import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.exceptions.ActionException;
 import it.unibo.ai.didattica.competition.tablut.exceptions.BoardException;
 import it.unibo.ai.didattica.competition.tablut.exceptions.ClimbingException;
