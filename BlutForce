@@ -1,0 +1,6 @@
+Virtual machine:
+https://liveunibo-my.sharepoint.com/:u:/g/personal/antonio_lopez2_studio_unibo_it/EaPw6A9pP91KuK-3Ei_doxUBQsnStIoyk6TqtJP6hsgFGw?e=NdbEQL
+Github repo:
+https://github.com/StefanoColamonaco/BlutForce
+Run player (script parameters are unchanged):
+/home/tablut/tablut/runmyplayer.sh [BLACK/WHITE] [time] [ip]
